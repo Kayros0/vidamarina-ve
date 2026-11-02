@@ -1,0 +1,63 @@
+VIDA MARINA VE — PAQUETE PARA EJECUTAR EN LOCAL
+================================================
+
+Qué es
+------
+Copia del catálogo web "Vida Marina VE" lista para ejecutarse en Windows con
+doble clic. Usa SQLite en local, así que no necesita instalar PostgreSQL ni
+configurar ninguna base de datos: los datos se cargan solos la primera vez.
+
+Requisitos
+----------
+- Windows 10 u 11.
+- Python 3.10 o superior (recomendado 3.12).
+  Descárgalo en https://www.python.org/downloads/
+  Al instalarlo, marca la casilla "Add python.exe to PATH".
+- Internet la primera vez (para descargar las dependencias) y para ver las
+  fotos de las especies, que se cargan desde Wikimedia Commons.
+
+Cómo se usa
+-----------
+1. Descomprime el archivo ZIP en una carpeta.
+2. Haz doble clic en "Iniciar.bat".
+3. La primera vez tarda 1-2 minutos porque crea el entorno e instala Flask.
+   Las siguientes veces arranca en segundos.
+4. El navegador se abrirá solo en http://127.0.0.1:5000
+   (si ese puerto está ocupado, usará el 5001).
+5. Para detener la aplicación, cierra la ventana negra o pulsa Ctrl+C.
+
+Cuenta de administrador
+-----------------------
+Usuario:     admin
+Contraseña:  Admin1234!
+
+El panel está en http://127.0.0.1:5000/admin/
+Esta contraseña es solo para la demostración local. En producción se cambia
+con la variable de entorno ADMIN_PASSWORD.
+
+Si algo falla
+-------------
+- "No se encontro Python 3": instala Python y vuelve a intentarlo.
+- Windows puede mostrar un aviso al abrir un .bat descargado de Internet.
+  Pulsa "Más información" y luego "Ejecutar de todas formas".
+- Si el navegador no se abre, entra manualmente a http://127.0.0.1:5000.
+- Para reiniciar la base de datos local, borra la carpeta "instance" y vuelve
+  a ejecutar "Iniciar.bat".
+
+Contenido
+---------
+app/            Código de la aplicación Flask (rutas, modelos, plantillas).
+data/           Catálogo de 46 especies en JSON.
+scripts/        Scripts para regenerar el catálogo y este paquete.
+tests/          Pruebas automatizadas.
+config.py       Configuración por variables de entorno.
+run.py          Entrada para desarrollo.
+iniciar.py      Lanzador que abre el navegador.
+Iniciar.bat     Doble clic para arrancar en Windows.
+requirements.txt Dependencias con versiones fijas.
+README.md       Documentación completa del proyecto.
+
+Más información
+---------------
+Repositorio: https://github.com/Kayros0/vidamarina-ve
+Aplicación en línea: https://vidamarina-ve.onrender.com

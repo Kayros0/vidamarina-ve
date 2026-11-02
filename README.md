@@ -16,6 +16,7 @@ desde un panel privado.
 - [Stack](#stack)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Ejecutar en local](#ejecutar-en-local)
+- [Paquete local para Windows](#paquete-local-para-windows)
 - [Cuenta de administrador](#cuenta-de-administrador)
 - [Rutas principales](#rutas-principales)
 - [Modelo de datos](#modelo-de-datos)
@@ -77,11 +78,18 @@ página de fuentes y licencias, y manejo de errores 403/404.
 │   └── README.md            # documentación del dataset
 ├── scripts/
 │   ├── build_dataset.py     # regenera el dataset desde Wikipedia/Wikidata/Commons
+│   ├── build_local_zip.py   # arma dist/vidamarina-ve-local.zip
 │   └── inspect_dataset.py   # resumen de control del dataset
 ├── tests/
 │   └── test_app.py          # 13 pruebas automatizadas
+├── dist/
+│   ├── README.md            # instrucciones del paquete local
+│   └── vidamarina-ve-local.zip
 ├── config.py                # configuración por variables de entorno
 ├── run.py                   # punto de entrada (dev y Gunicorn)
+├── iniciar.py               # lanzador local que abre el navegador
+├── Iniciar.bat              # doble clic para ejecutar en Windows
+├── LEEME.txt                # instrucciones del paquete local
 ├── render.yaml              # blueprint de despliegue en Render
 ├── requirements.txt         # dependencias con versiones fijas
 ├── .env.example             # plantilla de variables de entorno
@@ -90,11 +98,11 @@ página de fuentes y licencias, y manejo de errores 403/404.
 
 ## Ejecutar en local
 
-Requisitos: Python 3.12 y Git.
+Requisitos: Python 3.10+ (recomendado 3.12) y Git.
 
 ```powershell
 # 1. Clonar el repositorio
-git clone https://github.com/TU-USUARIO/vidamarina-ve.git
+git clone https://github.com/Kayros0/vidamarina-ve.git
 cd vidamarina-ve
 
 # 2. Crear el entorno virtual
@@ -121,6 +129,38 @@ La primera vez se crea `instance/vidamarina.db`, se cargan las 46 especies desde
 
 > En PowerShell, si la activación del entorno está bloqueada, ejecuta una vez:
 > `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`.
+
+## Paquete local para Windows
+
+Si solo quieres ver la aplicación funcionando sin instalar nada a mano, descarga
+el paquete y ejecútalo con doble clic:
+
+**[Descargar `vidamarina-ve-local.zip`](https://github.com/Kayros0/vidamarina-ve/raw/main/dist/vidamarina-ve-local.zip)**
+
+1. Descomprime el ZIP (queda la carpeta `vidamarina-ve-local`).
+2. Haz doble clic en **`Iniciar.bat`**.
+3. La primera vez crea el entorno virtual e instala las dependencias
+   (1–2 minutos, necesita Internet). Las siguientes veces arranca en segundos.
+4. El navegador se abre solo en `http://127.0.0.1:5000`; si el puerto está
+   ocupado, usa el `5001`.
+
+El paquete usa **SQLite**, así que no hace falta PostgreSQL ni cargar datos: la
+base `instance/vidamarina.db` se crea y se llena con las 46 especies en el primer
+arranque. Requiere Windows 10/11 y **Python 3.10+** instalado con la opción
+«Add python.exe to PATH».
+
+Cuenta de administrador de la demo local: `admin` / `Admin1234!`
+(cámbiala en producción con `ADMIN_PASSWORD`).
+
+Para regenerar el ZIP después de cambiar el código:
+
+```powershell
+python scripts/build_local_zip.py
+```
+
+El script excluye `.env`, `.venv/`, `instance/`, `.git/`, `__pycache__/`,
+`*.pyc`, `*.db` y `dist/`. Más detalles en
+[`dist/README.md`](dist/README.md).
 
 ## Cuenta de administrador
 
