@@ -14,6 +14,13 @@ _database_url = os.environ.get("DATABASE_URL", "").strip()
 if _database_url.startswith("postgres://"):
     _database_url = _database_url.replace("postgres://", "postgresql://", 1)
 
+# SQLAlchemy 2.1 intenta usar psycopg (v3) por defecto. Forzamos psycopg2,
+# que es el driver que instala requirements.txt.
+if _database_url.startswith("postgresql://"):
+    _database_url = _database_url.replace(
+        "postgresql://", "postgresql+psycopg2://", 1
+    )
+
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-cambiar-en-produccion")
