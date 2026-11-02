@@ -5,7 +5,8 @@ services:
     plan: free
     region: oregon
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    # Un solo worker evita que dos procesos carguen el seed a la vez en el primer arranque.
+    startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120
     healthCheckPath: /
     envVars:
       - key: PYTHON_VERSION
