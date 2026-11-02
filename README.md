@@ -6,7 +6,7 @@ Orinoco, buscar por nombre o hábitat, filtrar por grupo, región, rareza y año
 descripción, ver cada especie en un mapa interactivo y administrar el catálogo
 desde un panel privado.
 
-**Aplicación en producción:** _(pendiente de desplegar — se actualiza al final)_
+**Aplicación en producción:** <https://vidamarina-ve.onrender.com>
 
 ---
 
