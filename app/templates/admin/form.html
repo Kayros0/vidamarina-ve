@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}{% if species %}Editar{% else %}Nueva{% endif %} especie · Vida Marina VE{% endblock %}
+
+{% block content %}
+<section class="container admin-page">
+  <a class="back-link" href="{{ url_for('admin.index') }}">← Volver al panel</a>
+
+  <header class="page-head page-head-tight">
+    <p class="eyebrow">{% if species %}Actualizar ficha{% else %}Agregar al catálogo{% endif %}</p>
+    <h1>{% if species %}Editar «{{ species.common_name }}»{% else %}Nueva especie{% endif %}</h1>
+  </header>
+
+  <form method="post" class="admin-form" novalidate>
+    {{ form.hidden_tag() }}
+
+    <fieldset>
+      <legend>Identificación</legend>
+      <div class="form-grid">
+        <div class="field">
+          {{ form.common_name.label }}
+          {{ form.common_name(placeholder="Ej. Delfín rosado") }}
+          {% for error in form.common_name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="field">
+          {{ form.scientific_name.label }}
+          {{ form.scientific_name(placeholder="Ej. Inia geoffrensis") }}
+          {% for error in form.scientific_name.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="field">
+          {{ form.group.label }}
+          {{ form.group() }}
+        </div>
+        <div class="field">
+          {{ form.region.label }}
+          {{ form.region() }}
+        </div>
+        <div class="field field-full">
+          {{ form.habitat.label }}
+          {{ form.habitat(placeholder="Ej. Ríos y lagunas de la cuenca del Orinoco") }}
+          {% for error in form.habitat.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Descripción</legend>
+      <div class="field">
+        {{ form.description(rows=8, placeholder="Texto descriptivo de la especie…") }}
+        {% for error in form.description.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Conservación</legend>
+      <div class="form-grid">
+        <div class="field">
+          {{ form.iucn_status.label }}
+          {{ form.iucn_status() }}
+        </div>
+        <div class="field">
+          {{ form.iucn_year.label }}
+          {{ form.iucn_year(placeholder="Ej. 2018") }}
+          {% for error in form.iucn_year.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="field">
+          {{ form.described_year.label }}
+          {{ form.described_year(placeholder="Ej. 1817") }}
+          {% for error in form.described_year.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Imagen y fuente</legend>
+      <div class="form-grid">
+        <div class="field field-full">
+          {{ form.image_url.label }}
+          {{ form.image_url(placeholder="https://…") }}
+          {% for error in form.image_url.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="field">
+          {{ form.image_author.label }}
+          {{ form.image_author(placeholder="Nombre del autor") }}
+        </div>
+        <div class="field">
+          {{ form.image_license.label }}
+          {{ form.image_license(placeholder="Ej. CC BY-SA 4.0") }}
+        </div>
+        <div class="field field-full">
+          {{ form.source_url.label }}
+          {{ form.source_url(placeholder="https://es.wikipedia.org/wiki/…") }}
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Ubicación en el mapa</legend>
+      <div class="form-grid">
+        <div class="field">
+          {{ form.map_lat.label }}
+          {{ form.map_lat(placeholder="Ej. 8.0") }}
+          {% for error in form.map_lat.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="field">
+          {{ form.map_lng.label }}
+          {{ form.map_lng(placeholder="Ej. -63.5") }}
+          {% for error in form.map_lng.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        </div>
+        <div class="field field-full">
+          {{ form.map_label.label }}
+          {{ form.map_label(placeholder="Ej. Cuenca del Orinoco") }}
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      {{ form.submit(class="btn btn-primary") }}
+      <a class="btn btn-ghost" href="{{ url_for('admin.index') }}">Cancelar</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

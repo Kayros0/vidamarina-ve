@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: vidamarina-ve
+    runtime: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: SECRET_KEY
+        generateValue: true
+      # Pega aquí la cadena de conexión de Neon (postgresql://...).
+      # sync: false hace que Render la pida en el panel en vez de guardarla en el repo.
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_EMAIL
+        value: admin@vidamarina.ve
+      # Elige la contraseña del administrador en el panel de Render antes del primer deploy.
+      - key: ADMIN_PASSWORD
+        sync: false

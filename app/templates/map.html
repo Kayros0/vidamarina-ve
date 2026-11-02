@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Mapa de especies · Vida Marina VE{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block content %}
+<section class="map-page container">
+  <header class="page-head">
+    <p class="eyebrow">Geografía de la biodiversidad</p>
+    <h1>Mapa de especies</h1>
+    <p class="muted">
+      Cada punto es un lugar de referencia dentro de Venezuela. Filtra por región
+      y haz clic en un marcador para abrir la ficha de la especie.
+    </p>
+  </header>
+
+  <div class="map-layout">
+    <aside class="map-sidebar">
+      <div class="map-filters" role="group" aria-label="Filtrar mapa por región">
+        <button class="chip is-active" type="button" data-map-filter="all">Todas</button>
+        <button class="chip" type="button" data-map-filter="caribe">Caribe</button>
+        <button class="chip" type="button" data-map-filter="rios">Ríos</button>
+        <button class="chip" type="button" data-map-filter="ambas">Ambas</button>
+      </div>
+
+      <ul class="map-list">
+        {% for s in species %}
+          <li>
+            <button class="map-item" type="button" data-species-id="{{ s.id }}" data-region="{{ s.region }}">
+              <span class="dot dot-{{ s.region }}" aria-hidden="true"></span>
+              <span class="map-item-text">
+                <strong>{{ s.common_name }}</strong>
+                <em>{{ s.scientific_name }}</em>
+              </span>
+              <span class="badge badge-{{ s.iucn_status }}" title="{{ s.iucn_label }}">{{ s.iucn_status }}</span>
+            </button>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="map-legend">
+        <p><span class="dot dot-caribe"></span> Caribe</p>
+        <p><span class="dot dot-rios"></span> Ríos y aguas dulces</p>
+        <p><span class="dot dot-ambas"></span> Caribe y ríos</p>
+      </div>
+    </aside>
+
+    <div id="map" class="map-canvas" aria-label="Mapa interactivo de especies de Venezuela"></div>
+  </div>
+</section>
+
+<script id="species-data" type="application/json">{{ species|tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    (function () {
+      var dataEl = document.getElementById('species-data');
+      var species = JSON.parse(dataEl.textContent || '[]');
+      var colors = { caribe: '#22d3ee', rios: '#34d399', ambas: '#a78bfa' };
+
+      var map = L.map('map', { scrollWheelZoom: true }).setView([7.2, -66.5], 5);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+      }).addTo(map);
+
+      var markers = {};
+      var bounds = [];
+
+      function escapeHtml(value) {
+        return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+        });
+      }
+
+      species.forEach(function (item) {
+        if (item.map_lat == null || item.map_lng == null) return;
+
+        var color = colors[item.region] || '#22d3ee';
+        var marker = L.circleMarker([item.map_lat, item.map_lng], {
+          radius: 8, color: color, weight: 2, fillColor: color, fillOpacity: 0.75
+        }).addTo(map);
+
+        marker.bindPopup(
+          '<strong>' + escapeHtml(item.common_name) + '</strong><br>' +
+          '<em>' + escapeHtml(item.scientific_name) + '</em><br>' +
+          '<a href="' + escapeHtml(item.url) + '">Ver ficha completa</a>'
+        );
+
+        markers[item.id] = { layer: marker, region: item.region, latlng: [item.map_lat, item.map_lng] };
+        bounds.push([item.map_lat, item.map_lng]);
+      });
+
+      if (bounds.length) {
+        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 7 });
+      }
+
+      document.querySelectorAll('.map-item').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var entry = markers[button.dataset.speciesId];
+          if (!entry) return;
+          map.setView(entry.latlng, 8, { animate: true });
+          entry.layer.openPopup();
+        });
+      });
+
+      document.querySelectorAll('[data-map-filter]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var filter = button.dataset.mapFilter;
+
+          document.querySelectorAll('[data-map-filter]').forEach(function (other) {
+            other.classList.toggle('is-active', other === button);
+          });
+
+          Object.keys(markers).forEach(function (id) {
+            var entry = markers[id];
+            var visible = filter === 'all' || entry.region === filter;
+            if (visible) {
+              entry.layer.addTo(map);
+            } else {
+              map.removeLayer(entry.layer);
+            }
+          });
+
+          document.querySelectorAll('.map-item').forEach(function (item) {
+            item.closest('li').hidden = filter !== 'all' && item.dataset.region !== filter;
+          });
+        });
+      });
+    })();
+  </script>
+{% endblock %}

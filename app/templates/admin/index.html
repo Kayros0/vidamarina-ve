@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de administración · Vida Marina VE{% endblock %}
+
+{% block content %}
+<section class="container admin-page">
+  <header class="admin-head">
+    <div>
+      <p class="eyebrow">Gestión del catálogo</p>
+      <h1>Panel de administración</h1>
+      <p class="muted">{{ species|length }} especie(s) en la base de datos.</p>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('admin.create') }}">+ Nueva especie</a>
+  </header>
+
+  <form class="admin-search" method="get" action="{{ url_for('admin.index') }}" role="search">
+    <input type="search" name="q" value="{{ q }}" placeholder="Buscar en el catálogo…" aria-label="Buscar especies en el panel">
+    <button class="btn btn-ghost" type="submit">Buscar</button>
+  </form>
+
+  {% if species %}
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Especie</th>
+            <th>Grupo</th>
+            <th>Región</th>
+            <th>UICN</th>
+            <th class="actions-col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in species %}
+            <tr>
+              <td>
+                <div class="table-species">
+                  <img src="{{ s.image_url or url_for('static', filename='img/placeholder.svg') }}"
+                       alt="" loading="lazy"
+                       onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder.svg') }}';">
+                  <div>
+                    <strong>{{ s.common_name }}</strong>
+                    <em>{{ s.scientific_name }}</em>
+                  </div>
+                </div>
+              </td>
+              <td>{{ s.group_label }}</td>
+              <td>{{ s.region_label }}</td>
+              <td><span class="badge badge-{{ s.iucn_status }}" title="{{ s.iucn_label }}">{{ s.iucn_status }}</span></td>
+              <td class="actions-col">
+                <div class="row-actions">
+                  <a class="btn btn-small btn-ghost" href="{{ url_for('main.species_detail', species_id=s.id) }}">Ver</a>
+                  <a class="btn btn-small btn-ghost" href="{{ url_for('admin.edit', species_id=s.id) }}">Editar</a>
+                  <form method="post" action="{{ url_for('admin.delete', species_id=s.id) }}"
+                        onsubmit="return confirm('¿Eliminar «{{ s.common_name }}» del catálogo?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-small btn-danger" type="submit">Eliminar</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <h3>No hay resultados</h3>
+      <p>No encontramos especies con ese criterio de búsqueda.</p>
+      <a class="btn btn-primary" href="{{ url_for('admin.index') }}">Ver todas</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

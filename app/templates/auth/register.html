@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Crear cuenta · Vida Marina VE{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="auth-card">
+    <p class="eyebrow">Únete al catálogo</p>
+    <h1>Crear cuenta</h1>
+    <p class="muted">Regístrate para iniciar sesión y explorar el catálogo completo.</p>
+
+    <form method="post" class="form-stack" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="field">
+        {{ form.username.label }}
+        {{ form.username(autocomplete="username", placeholder="Mínimo 3 caracteres") }}
+        {% for error in form.username.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+      </div>
+
+      <div class="field">
+        {{ form.email.label }}
+        {{ form.email(autocomplete="email", placeholder="tu@correo.com") }}
+        {% for error in form.email.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+      </div>
+
+      <div class="field">
+        {{ form.password.label }}
+        {{ form.password(autocomplete="new-password", placeholder="Mínimo 8 caracteres") }}
+        {% for error in form.password.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+      </div>
+
+      <div class="field">
+        {{ form.confirm.label }}
+        {{ form.confirm(autocomplete="new-password", placeholder="Repite la contraseña") }}
+        {% for error in form.confirm.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+      </div>
+
+      {{ form.submit(class="btn btn-primary btn-block") }}
+    </form>
+
+    <p class="auth-alt">¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}">Inicia sesión</a></p>
+  </div>
+</section>
+{% endblock %}

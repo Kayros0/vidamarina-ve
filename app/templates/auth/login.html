@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar sesión · Vida Marina VE{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="auth-card">
+    <p class="eyebrow">Bienvenido de vuelta</p>
+    <h1>Iniciar sesión</h1>
+    <p class="muted">Accede para guardar tu sesión y, si eres administrador, gestionar el catálogo.</p>
+
+    <form method="post" class="form-stack" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="field">
+        {{ form.identity.label }}
+        {{ form.identity(autocomplete="username", placeholder="tu@correo.com o tu usuario") }}
+        {% for error in form.identity.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+      </div>
+
+      <div class="field">
+        {{ form.password.label }}
+        {{ form.password(autocomplete="current-password", placeholder="Tu contraseña") }}
+        {% for error in form.password.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+      </div>
+
+      <label class="checkbox">{{ form.remember() }} <span>{{ form.remember.label.text }}</span></label>
+
+      {{ form.submit(class="btn btn-primary btn-block") }}
+    </form>
+
+    <p class="auth-alt">¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate gratis</a></p>
+  </div>
+</section>
+{% endblock %}

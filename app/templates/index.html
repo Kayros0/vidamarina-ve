@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="container hero-inner">
+    <p class="eyebrow">Catálogo de biodiversidad acuática</p>
+    <h1>Vida marina y de ríos<br><span>de Venezuela</span></h1>
+    <p class="hero-lead">
+      Del azul del Caribe a las aguas del Orinoco: explora las especies que habitan
+      nuestros mares, islas y ríos, y descubre cuáles están en peligro.
+    </p>
+
+    <form class="search-form" method="get" action="{{ url_for('main.index') }}" role="search">
+      <input type="hidden" name="region" value="{{ filters.region }}">
+      <input type="hidden" name="grupo" value="{{ filters.grupo }}">
+      <input type="hidden" name="orden" value="{{ filters.orden }}">
+      <span class="search-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+        </svg>
+      </span>
+      <input type="search" name="q" value="{{ filters.q }}" placeholder="Busca por nombre, especie o hábitat…" aria-label="Buscar especies">
+      <button class="btn btn-primary" type="submit">Buscar</button>
+    </form>
+
+    <div class="hero-stats">
+      <div><strong>{{ stats.total }}</strong><span>especies</span></div>
+      <div><strong>{{ stats.caribe }}</strong><span>del Caribe</span></div>
+      <div><strong>{{ stats.rios }}</strong><span>de ríos</span></div>
+      <div><strong>{{ stats.amenazadas }}</strong><span>amenazadas</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="catalog container">
+  <div class="catalog-head">
+    <div>
+      <h2>Explora el catálogo</h2>
+      <p class="muted">
+        {% if filters.q %}
+          Resultados para «{{ filters.q }}» · {{ species|length }} especie(s)
+        {% else %}
+          {{ species|length }} especie(s) en la colección
+        {% endif %}
+      </p>
+    </div>
+
+    <form class="sort-form" method="get" action="{{ url_for('main.index') }}">
+      <input type="hidden" name="q" value="{{ filters.q }}">
+      <input type="hidden" name="region" value="{{ filters.region }}">
+      <label class="select-label">
+        <span>Grupo</span>
+        <select name="grupo" data-autosubmit>
+          <option value="">Todos</option>
+          {% for key, label in group_labels.items() %}
+            <option value="{{ key }}" {% if filters.grupo == key %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="select-label">
+        <span>Ordenar por</span>
+        <select name="orden" data-autosubmit>
+          {% for key, label in sort_options.items() %}
+            <option value="{{ key }}" {% if filters.orden == key %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <noscript><button class="btn btn-ghost" type="submit">Aplicar</button></noscript>
+    </form>
+  </div>
+
+  <div class="filter-row" aria-label="Filtrar por región">
+    <a class="chip {% if not filters.region %}is-active{% endif %}"
+       href="{{ url_for('main.index', q=filters.q, grupo=filters.grupo, orden=filters.orden) }}">Todas</a>
+    <a class="chip {% if filters.region == 'caribe' %}is-active{% endif %}"
+       href="{{ url_for('main.index', q=filters.q, grupo=filters.grupo, orden=filters.orden, region='caribe') }}">Caribe</a>
+    <a class="chip {% if filters.region == 'rios' %}is-active{% endif %}"
+       href="{{ url_for('main.index', q=filters.q, grupo=filters.grupo, orden=filters.orden, region='rios') }}">Ríos y aguas dulces</a>
+    <a class="chip {% if filters.region == 'ambas' %}is-active{% endif %}"
+       href="{{ url_for('main.index', q=filters.q, grupo=filters.grupo, orden=filters.orden, region='ambas') }}">Caribe y ríos</a>
+  </div>
+
+  {% if species %}
+    <div class="species-grid">
+      {% for s in species %}
+        <article class="species-card reveal">
+          <a href="{{ url_for('main.species_detail', species_id=s.id) }}">
+            <div class="card-media">
+              <img src="{{ s.image_url or url_for('static', filename='img/placeholder.svg') }}"
+                   alt="Imagen de {{ s.common_name }}"
+                   loading="lazy"
+                   onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/placeholder.svg') }}';">
+              <span class="badge badge-{{ s.iucn_status }}" title="{{ s.iucn_label }}">{{ s.iucn_status }}</span>
+            </div>
+            <div class="card-body">
+              <p class="card-region">{{ s.region_label }} · {{ s.group_label }}</p>
+              <h3>{{ s.common_name }}</h3>
+              <p class="sci">{{ s.scientific_name }}</p>
+              <p class="card-habitat">{{ s.habitat }}</p>
+              {% if s.described_year %}
+                <p class="card-year">Descrita en {{ s.described_year }}</p>
+              {% endif %}
+            </div>
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <h3>No encontramos esa especie</h3>
+      <p>Prueba con otro nombre, revisa la ortografía o quita los filtros.</p>
+      <a class="btn btn-primary" href="{{ url_for('main.index') }}">Ver todo el catálogo</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Fuentes y licencias · Vida Marina VE{% endblock %}
+
+{% block content %}
+<section class="container page-head">
+  <p class="eyebrow">Transparencia de los datos</p>
+  <h1>Fuentes y licencias</h1>
+  <p class="muted">
+    El catálogo se construyó con información pública y verificable. Los textos se
+    almacenan en nuestra base de datos para que la aplicación funcione sin depender
+    de servicios externos en tiempo de ejecución.
+  </p>
+</section>
+
+<section class="container sources-grid">
+  <article class="source-card">
+    <h2>Wikipedia en español</h2>
+    <p>Descripciones y datos generales de cada especie.</p>
+    <p class="source-license">Licencia CC BY-SA 4.0</p>
+    <a href="https://es.wikipedia.org/" target="_blank" rel="noopener noreferrer">es.wikipedia.org ↗</a>
+  </article>
+
+  <article class="source-card">
+    <h2>Wikidata</h2>
+    <p>Estado de conservación UICN, año de descripción científica e imágenes.</p>
+    <p class="source-license">Datos bajo CC0</p>
+    <a href="https://www.wikidata.org/" target="_blank" rel="noopener noreferrer">wikidata.org ↗</a>
+  </article>
+
+  <article class="source-card">
+    <h2>Lista Roja de la UICN</h2>
+    <p>Categorías de amenaza: CR, EN, VU, NT, LC, DD y NE.</p>
+    <p class="source-license">Datos citados con su año de evaluación</p>
+    <a href="https://www.iucnredlist.org/" target="_blank" rel="noopener noreferrer">iucnredlist.org ↗</a>
+  </article>
+
+  <article class="source-card">
+    <h2>Wikimedia Commons</h2>
+    <p>Fotografías de las especies, con el crédito y la licencia de cada autor.</p>
+    <p class="source-license">Licencias individuales por imagen</p>
+    <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">commons.wikimedia.org ↗</a>
+  </article>
+
+  <article class="source-card">
+    <h2>OpenStreetMap</h2>
+    <p>Cartografía base del mapa interactivo.</p>
+    <p class="source-license">Open Data Commons Open Database License (ODbL)</p>
+    <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">openstreetmap.org ↗</a>
+  </article>
+
+  <article class="source-card">
+    <h2>Leaflet</h2>
+    <p>Librería de mapas interactivos utilizada en el frontend.</p>
+    <p class="source-license">BSD 2-Clause</p>
+    <a href="https://leafletjs.com/" target="_blank" rel="noopener noreferrer">leafletjs.com ↗</a>
+  </article>
+</section>
+
+<section class="container sources-note">
+  <h2>Cómo se mantiene la información</h2>
+  <p>
+    Un script de carga inicial guarda las especies en la base de datos. Desde el
+    panel de administración se pueden agregar, editar o eliminar fichas, y cada
+    cambio queda reflejado en el catálogo, la búsqueda y el mapa.
+  </p>
+</section>
+{% endblock %}
